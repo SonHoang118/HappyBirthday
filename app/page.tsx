@@ -31,7 +31,7 @@ export default function Home() {
   const pageSize = 6;
 
   const message =
-    "Hế lô là bạn Sơn nè =)), hôm nọ mua nhầm phải cái thiệp lỏ quá có mỗi 2 dòng chả viết được cái dề, mà t cũng muốn làm một cái gì đó thật special cho m nên là Yepp =))) nó đây, nói chung là cũng chúc m có 1 dịp sinh nhật thật là vui, tuổi mới trưởng thành hơn, xinh đẹp hơn và có một công việc ổn định nhé =))) bà nội suốt ngày đi phòng vấn thôi với lại chúc m sẽ sớm có mối tình đầu nhé (cứ cho là t tin đi hehe). Thế thôi =))) thì t với m cũng mới biết nhau cũng chưa có nhiều chuyện gì để mà nói, mong sẽ được đi chơi cùng m nhiều hơn để mà hiểu m hơn :>>. Cam on vi da den nho va chuc mung sinh nhat hehehehehe";
+    "Hế lô là bạn Sơn nè =)), hôm nọ mua nhầm phải cái thiệp lỏ quá có mỗi 2 dòng chả viết được cái dề, mà t cũng muốn làm một cái gì đó thật special cho m nên là Yepp =))) nó đây. Lần đầu t làm cái kiểu như này đấy sếnnnnnn điênnnnnnnnnnnnnnnn. Nói chung là cũng chúc m có 1 dịp sinh nhật thật là vui, tuổi mới trưởng thành hơn, xinh đẹp hơn và có một công việc ổn định nhé =))) bà nội suốt ngày đi phòng vấn thôi với lại chúc m sẽ sớm có mối tình đầu nhé (cứ cho là t tin đi hehe). Thế thôi =))) thì t với m cũng mới biết nhau cũng chưa có nhiều chuyện gì để mà nói, mong sẽ được đi chơi cùng m nhiều hơn để mà hiểu m hơn :>>. Cam on vi da den nho va chuc mung sinh nhat hehehehehe";
 
   const [typedDate, setTypedDate] = useState("");
   const [isUnlocked, setIsUnlocked] = useState(false);
