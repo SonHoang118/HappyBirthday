@@ -6,10 +6,53 @@ import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 
+let universeAudioSingleton: HTMLAudioElement | null = null;
+let universeAudioEndedHandler: (() => void) | null = null;
+
 export default function UniverseSphere() {
   const mountRef = useRef<HTMLDivElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
+    const playlist = ["/agora-hills.mp3", "/kiss-me-more.mp3", "/maneater.mp3"];
+
+    if (universeAudioSingleton) {
+      if (universeAudioEndedHandler) {
+        universeAudioSingleton.removeEventListener("ended", universeAudioEndedHandler);
+      }
+      universeAudioSingleton.pause();
+      universeAudioSingleton.currentTime = 0;
+      universeAudioSingleton = null;
+      universeAudioEndedHandler = null;
+    }
+
+    const getRandomIndex = (exclude: number) => {
+      const candidates = playlist
+        .map((_, i) => i)
+        .filter((i) => i !== exclude);
+      return candidates[Math.floor(Math.random() * candidates.length)];
+    };
+
+    let currentTrackIndex = Math.floor(Math.random() * playlist.length);
+    const audio = new Audio(playlist[currentTrackIndex]);
+    audio.volume = 0.65;
+    audioRef.current = audio;
+
+    const playCurrentTrack = () => {
+      audio.src = playlist[currentTrackIndex];
+      audio.play().catch(() => {});
+    };
+
+    const handleTrackEnded = () => {
+      currentTrackIndex = getRandomIndex(currentTrackIndex);
+      playCurrentTrack();
+    };
+
+    audio.addEventListener("ended", handleTrackEnded);
+    universeAudioSingleton = audio;
+    universeAudioEndedHandler = handleTrackEnded;
+    playCurrentTrack();
+
     // ===== SCENE =====
     const scene = new THREE.Scene();
     scene.background = new THREE.Color("#050010");
@@ -179,7 +222,7 @@ export default function UniverseSphere() {
     // scene.add(imageGroup);
 
     const textureLoader = new THREE.TextureLoader();
-    const imagePaths = Array.from({ length: 33 }, (_, i) => `/universeImages/${i + 1}.png`);
+    const imagePaths = Array.from({ length: 35 }, (_, i) => `/universeImages/${i + 1}.png`);
 
     imagePaths.forEach((path) => {
       textureLoader.load(path, (texture) => {
@@ -246,6 +289,14 @@ export default function UniverseSphere() {
 
     return () => {
       window.removeEventListener("resize", handleResize);
+      audio.removeEventListener("ended", handleTrackEnded);
+      audio.pause();
+      audio.currentTime = 0;
+      if (universeAudioSingleton === audio) {
+        universeAudioSingleton = null;
+        universeAudioEndedHandler = null;
+      }
+      audioRef.current = null;
       if (mountEl.contains(renderer.domElement)) {
         mountEl.removeChild(renderer.domElement);
       }
@@ -270,7 +321,7 @@ export default function UniverseSphere() {
           userSelect: "none",
         }}
       >
-        Vũ trụ này chỉ có Lỏ &lt;3
+        Ú òa, bạn đã lạc vào Vũ trụ này chỉ có Lỏ &lt;3
       </div>
     </div>
   );

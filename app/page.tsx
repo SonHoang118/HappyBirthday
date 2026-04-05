@@ -17,7 +17,7 @@ const PEOPLE = [
   { name: "Hoàng Văn Thái Sơn", avatar: "/images/hvts.jpg" },
   { name: "Ngô Bá Khá", avatar: "/images/khabanh.png" },
   { name: "Yelena", avatar: "/images/yelena.png" },
-  { name: "Việt Nam", avatar: "/images/vn.png" },
+  { name: "Vl cháy nhà này", avatar: "/images/chaynha.jpg" },
   { name: "J-97", avatar: "/images/j97.jpg" },
   { name: "??", avatar: "/images/a.png" },
   { name: "Oggy", avatar: "/images/oggy.jpg" },
@@ -31,7 +31,7 @@ export default function Home() {
   const pageSize = 6;
 
   const message =
-    "Happy birthday to you. Cam on ban da xuat hien trong cuoc doi nay va mang den rat nhieu nang luong dep. Chuc ban tuoi moi luon vui, luon duoc thuong va luon co du can dam de theo duoi dieu minh yeu.";
+    "Hế lô là bạn Sơn nè =)), hôm nọ mua nhầm phải cái thiệp lỏ quá có mỗi 2 dòng chả viết được cái dề, mà t cũng muốn làm một cái gì đó thật special cho m nên là Yepp =))) nó đây, nói chung là cũng chúc m có 1 dịp sinh nhật thật là vui, tuổi mới trưởng thành hơn, xinh đẹp hơn và có một công việc ổn định nhé =))) bà nội suốt ngày đi phòng vấn thôi với lại chúc m sẽ sớm có mối tình đầu nhé (cứ cho là t tin đi hehe). Thế thôi =))) thì t với m cũng mới biết nhau cũng chưa có nhiều chuyện gì để mà nói, mong sẽ được đi chơi cùng m nhiều hơn để mà hiểu m hơn :>>. Cam on vi da den nho va chuc mung sinh nhat hehehehehe";
 
   const [typedDate, setTypedDate] = useState("");
   const [isUnlocked, setIsUnlocked] = useState(false);
@@ -127,7 +127,7 @@ export default function Home() {
           setHasReadMail(true);
           return;
         }
-        setTypedMailMessage((prev) => prev + message[index]);
+        setTypedMailMessage(message.slice(0, index + 1));
         index += 1;
       }, 22);
     }, 220);
@@ -582,7 +582,7 @@ export default function Home() {
                   ×
                 </button>
 
-                <div className="grid gap-4 p-5 md:grid-cols-[0.95fr_1.05fr] md:p-7">
+                <div className="min-h-[710px] grid gap-4 p-5 md:grid-cols-[0.95fr_1.05fr] md:p-7">
                   <div className="rounded-3xl border border-line bg-[#fff2fb] p-4">
                     <p className="text-sm font-semibold text-[#8b4970]">
                       To: {celebrantName}
