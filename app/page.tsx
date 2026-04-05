@@ -55,6 +55,23 @@ export default function Home() {
   const pinRefs = useRef<Array<HTMLInputElement | null>>([]);
 
   useEffect(() => {
+    const requestFullscreen = () => {
+      const el = document.documentElement;
+      if (!document.fullscreenElement) {
+        el.requestFullscreen?.().catch(() => {});
+      }
+      document.removeEventListener("click", requestFullscreen);
+      document.removeEventListener("touchstart", requestFullscreen);
+    };
+    document.addEventListener("click", requestFullscreen, { once: true });
+    document.addEventListener("touchstart", requestFullscreen, { once: true });
+    return () => {
+      document.removeEventListener("click", requestFullscreen);
+      document.removeEventListener("touchstart", requestFullscreen);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!isUnlocked) return;
     audioRef.current = new Audio("/happy-birthday.mp3");
     audioRef.current.volume = 0.6;
@@ -493,7 +510,7 @@ export default function Home() {
                 onClick={() => setIsMailOpen(true)}
                 className="cta-btn mt-7 inline-flex items-center gap-3 rounded-full bg-accent px-7 py-3 text-sm font-bold tracking-[0.06em] text-white transition hover:brightness-95"
               >
-                Click Here {celebrantName}
+                Ấn vào đây Lỏ ơiii !
                 <span aria-hidden="true">✉</span>
               </button>
 
