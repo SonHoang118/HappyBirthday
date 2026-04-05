@@ -107,7 +107,7 @@ export default function Home() {
     }
 
     setWrongPick(selectedPerson);
-    setGateMessage("Sai nguoi hoac sai mat khau, thu lai nhe.");
+    setGateMessage("Unu sai rùi thử lại i nha :<");
     window.setTimeout(() => setWrongPick(null), 520);
   };
 
@@ -185,13 +185,14 @@ export default function Home() {
                 </button>
               ))}
             </div>
-
+            
+            <br /><br />
             <div className="gate-pagination" aria-label="Pagination">
               {currentPage > 1  && <button
                 type="button"
                 onClick={() => goToPage(currentPage - 1)}
                 // disabled={currentPage === 1}
-                className="pager-btn nextbtn"
+                className="pager-btn prevbtn"
               >
                 Nuuu chả có ai trong này cả, trang trước đi :3
               </button>}
@@ -200,15 +201,11 @@ export default function Home() {
                 type="button"
                 onClick={() => goToPage(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="pager-btn prevbtn"
+                className="pager-btn nextbtn"
               >
                 Trang nầy chã có ai cả, trang sau đi :3
               </button>}
             </div>
-            <p className="gate-feedback" aria-live="polite">
-              {gateMessage}
-            </p>
-
             {isPasswordModalOpen && selectedPerson && (
               <section className="gate-pass-overlay" role="dialog" aria-modal="true">
                 <article className="gate-pass-modal">
@@ -221,8 +218,9 @@ export default function Home() {
                   </button>
 
                   <form className="gate-auth" onSubmit={handlePasswordSubmit}>
-                    <h3 className="gate-auth-title">Nhap mat khau</h3>
-                    <p className="gate-auth-label">Tai khoan duoc chon: {selectedPerson}</p>
+                    <h3 className="gate-auth-title">Có chắc không bbi =)))</h3>
+                    <p className="gate-auth-label">Bbi cần nhập mật khẩu cho {selectedPerson}</p>
+                    <br />
                     <input
                       id="gate-password"
                       type="password"
@@ -233,9 +231,13 @@ export default function Home() {
                       placeholder="Nhap mat khau"
                       autoFocus
                     />
+                    <br /><br />
                     <button type="submit" className="gate-submit gate-submit-full">
                       Xac nhan
                     </button>
+                    <p className="gate-feedback" aria-live="polite">
+                      {gateMessage}
+                    </p>
                   </form>
                 </article>
               </section>

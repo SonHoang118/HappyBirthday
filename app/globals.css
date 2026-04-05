@@ -73,7 +73,7 @@ body {
 .storybook-card {
   position: relative;
   overflow: hidden;
-  animation: zoomBreathCardFast 2.2s ease-in-out infinite;
+  /* animation: zoomBreathCardFast .5s ease-in-out infinite; */
 }
 
 .storybook-card::before {
@@ -275,7 +275,7 @@ body {
 }
 
 .mail-box {
-  animation: popIn 0.32s ease-out, zoomBreathCardFast 2.1s ease-in-out infinite;
+  /* animation: popIn 0.32s ease-out, zoomBreathCardFast 2.1s ease-in-out infinite; */
 }
 
 .gate-screen {
@@ -367,7 +367,7 @@ body {
   text-align: center;
   padding: 0.85rem 0.55rem;
   transition: transform 0.18s ease, background-color 0.18s ease;
-  animation: zoomBreathCardFast 1.9s ease-in-out infinite;
+  animation: zoomBreathCardFast .4s ease-in-out infinite;
 }
 
 .person-card:hover {
@@ -452,7 +452,7 @@ body {
   background: #fff7fd;
   box-shadow: 0 22px 50px -32px rgb(140 39 101 / 65%);
   padding: 0.75rem;
-  animation: zoomBreathCardFast 2.2s ease-in-out infinite;
+  /* animation: zoomBreathCardFast 2.2s ease-in-out infinite; */
 }
 
 .gate-pass-close {
@@ -516,20 +516,21 @@ body {
 .pager-btn {
   border: 1px solid var(--line);
   border-radius: 9999px;
-  color: #7b3f63;
-  font-size: 2rem;
+  font-size: 1rem;
   font-weight: 800;
   padding: 0.38rem 0.85rem;
-  animation: zoomBreathButtonFast .5s ease-in-out infinite;
+  /* animation: zoomBreathButtonFast 1s ease-in-out infinite; */
 }
 
 .pager-btn:disabled {
   opacity: 0.5;
 }
 .nextbtn{
+  color: #ffffff;
   background: #da3ca2;
 }
 .prevbtn{
+  color: #7b3f63;
   background: #ffeef9;
 }
 
