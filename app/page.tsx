@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 
 const PEOPLE = [
   { name: "Jeon Jung-cook", avatar: "/images/jungkook.png" },
@@ -42,7 +43,13 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isMailOpen, setIsMailOpen] = useState(false);
   const [typedMailMessage, setTypedMailMessage] = useState("");
-  const [hasPlayedMailTyping, setHasPlayedMailTyping] = useState(false);
+  const [hasReadMail, setHasReadMail] = useState(false);
+  const [isPrankModalOpen, setIsPrankModalOpen] = useState(false);
+  const [prankStep, setPrankStep] = useState<1 | 2>(1);
+  const [noPressCount, setNoPressCount] = useState(0);
+  const [noButtonStyle, setNoButtonStyle] = useState<CSSProperties>({});
+  const hasPlayedMailTypingRef = useRef(false);
+  const router = useRouter();
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const pinRefs = useRef<Array<HTMLInputElement | null>>([]);
@@ -100,14 +107,15 @@ export default function Home() {
       return;
     }
 
-    if (hasPlayedMailTyping) {
+    if (hasPlayedMailTypingRef.current) {
       setTypedMailMessage(message);
+      setHasReadMail(true);
       return;
     }
 
     let index = 0;
     setTypedMailMessage("");
-    setHasPlayedMailTyping(true);
+    hasPlayedMailTypingRef.current = true;
     let timer: number | undefined;
 
     const startDelay = window.setTimeout(() => {
@@ -116,6 +124,7 @@ export default function Home() {
           if (timer) {
             window.clearInterval(timer);
           }
+          setHasReadMail(true);
           return;
         }
         setTypedMailMessage((prev) => prev + message[index]);
@@ -129,7 +138,7 @@ export default function Home() {
         window.clearInterval(timer);
       }
     };
-  }, [hasPlayedMailTyping, isMailOpen, message]);
+  }, [isMailOpen, message]);
 
   const handlePersonPick = (name: string) => {
     setSelectedPerson(name);
@@ -227,6 +236,47 @@ export default function Home() {
     const nextFocusIndex = Math.min(pasted.length, 5);
     pinRefs.current[nextFocusIndex]?.focus();
   };
+
+  const openPrankModal = () => {
+    setIsPrankModalOpen(true);
+    setPrankStep(1);
+    setNoPressCount(0);
+    setNoButtonStyle({});
+  };
+
+  const handleNoClick = () => {
+    setNoPressCount((prev) => {
+      const next = prev + 1;
+
+      if (next >= 5) {
+        const top = 8 + Math.random() * 78;
+        const left = 6 + Math.random() * 84;
+        const rotate = -16 + Math.random() * 32;
+        setNoButtonStyle({
+          top: `${top}vh`,
+          left: `${left}vw`,
+          transform: `scale(0.5) rotate(${rotate}deg)`,
+        });
+      }
+
+      return next;
+    });
+  };
+
+  const handleOkClick = () => {
+    if (prankStep === 1) {
+      setPrankStep(2);
+      setNoPressCount(0);
+      setNoButtonStyle({});
+      return;
+    }
+
+    setIsPrankModalOpen(false);
+    router.push("/universe");
+  };
+
+  const prankModalMessage =
+    prankStep === 1 ? "Kkk m đã bị lừa, nếu ấn vào đây rồi thì cho a Sơn 500k nhé =))" : "tuần sau đi chơi với tớ nhé :33";
 
   return (
     <main className="birthday-page hb-shell relative min-h-screen overflow-hidden px-4 py-8 sm:px-8">
@@ -458,6 +508,17 @@ export default function Home() {
                   </span>
                 ))}
               </div>
+
+              {hasReadMail && (
+                <button
+                  type="button"
+                  onClick={openPrankModal}
+                  className="reveal mt-6 inline-flex items-center rounded-full border border-line bg-[#ffe2f5] px-6 py-3 text-sm font-extrabold text-[#7c2f5e] shadow-[0_12px_24px_-18px_rgba(153,46,111,0.9)] transition hover:scale-[1.02]"
+                  style={{ animationDelay: "0.1s" }}
+                >
+                  Chua het dau an vao day di =))
+                </button>
+              )}
             </section>
 
             <section className="relative rounded-3xl border border-line bg-[#fff2fb]/80 p-5 sm:p-6">
@@ -543,6 +604,32 @@ export default function Home() {
                       )}
                     </p>
                   </div>
+                </div>
+              </article>
+            </section>
+          )}
+
+          {isPrankModalOpen && (
+            <section className="prank-overlay" role="dialog" aria-modal="true">
+              <article
+                className={`prank-modal ${
+                  noPressCount >= 2 ? (prankStep === 2 ? "shifted-step2" : "shifted") : ""
+                }`}
+              >
+                <p className="prank-title">{prankModalMessage}</p>
+
+                <div className="prank-actions">
+                  <button
+                    type="button"
+                    onClick={handleNoClick}
+                    className={`prank-no-btn ${noPressCount >= 1 ? "small" : ""} ${noPressCount >= 3 ? "outside" : ""} ${noPressCount >= 4 ? "flying" : ""}`}
+                    style={noButtonStyle}
+                  >
+                    Khồnggg
+                  </button>
+                  <button type="button" onClick={handleOkClick} className="prank-ok-btn">
+                    Ok
+                  </button>
                 </div>
               </article>
             </section>
