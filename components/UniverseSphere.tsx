@@ -1,13 +1,13 @@
 "use client";
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
-import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
-import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 
 export default function UniverseSphere() {
-  const mountRef = useRef(null);
+  const mountRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     // ===== SCENE =====
@@ -28,7 +28,11 @@ export default function UniverseSphere() {
     // ✅ FIX COLOR (Three.js mới)
     renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-    mountRef.current.appendChild(renderer.domElement);
+    const mountEl = mountRef.current;
+    if (!mountEl) {
+      return;
+    }
+    mountEl.appendChild(renderer.domElement);
 
     // ===== BLOOM =====
     const composer = new EffectComposer(renderer);
@@ -59,8 +63,8 @@ export default function UniverseSphere() {
     // ===== PARTICLES =====
     const gu = { time: { value: 0 } };
 
-    const sizes = [];
-    const shift = [];
+    const sizes: number[] = [];
+    const shift: number[] = [];
 
     const pushShift = () => {
       shift.push(
@@ -71,7 +75,7 @@ export default function UniverseSphere() {
       );
     };
 
-    let pts = new Array(25000).fill().map(() => {
+    let pts = new Array(25000).fill(0).map(() => {
       sizes.push(Math.random() * 1.5 + 0.5);
       pushShift();
       return new THREE.Vector3()
@@ -106,18 +110,20 @@ export default function UniverseSphere() {
       transparent: true,
       depthTest: false,
       blending: THREE.AdditiveBlending,
-      onBeforeCompile: (shader) => {
-        shader.uniforms.time = gu.time;
+    });
 
-        shader.vertexShader = `
+    m.onBeforeCompile = (shader: any) => {
+      shader.uniforms.time = gu.time;
+
+      shader.vertexShader = `
           uniform float time;
           attribute float sizes;
           attribute vec4 shift;
           varying vec3 vColor;
           ${shader.vertexShader}
         `
-          .replace(`gl_PointSize = size;`, `gl_PointSize = size * sizes;`)
-          .replace(
+        .replace(`gl_PointSize = size;`, `gl_PointSize = size * sizes;`)
+        .replace(
   `#include <color_vertex>`,
   `#include <color_vertex>
   float d = length(abs(position) / vec3(40., 10., 40.));
@@ -133,9 +139,9 @@ export default function UniverseSphere() {
   vColor = mix(color1, color2, step(0.5, d));
 `
 )
-          .replace(
-            `#include <begin_vertex>`,
-            `#include <begin_vertex>
+        .replace(
+          `#include <begin_vertex>`,
+          `#include <begin_vertex>
             float t = time;
             float moveT = mod(shift.x + shift.z * t, PI2);
             float moveS = mod(shift.y + shift.z * t, PI2);
@@ -145,25 +151,24 @@ export default function UniverseSphere() {
               sin(moveS) * sin(moveT)
             ) * shift.a;
           `
-          );
+        );
 
-        shader.fragmentShader = `
+      shader.fragmentShader = `
           varying vec3 vColor;
           ${shader.fragmentShader}
         `
-          .replace(
-            `void main() {`,
-            `void main() {
+        .replace(
+          `void main() {`,
+          `void main() {
               float d = length(gl_PointCoord.xy - 0.5);
               if (d > 0.5) discard;
             `
-          )
-          .replace(
-            `vec4 diffuseColor = vec4( diffuse, opacity );`,
-            `vec4 diffuseColor = vec4(vColor, smoothstep(0.1, 0.5, d));`
-          );
-      },
-    });
+        )
+        .replace(
+          `vec4 diffuseColor = vec4( diffuse, opacity );`,
+          `vec4 diffuseColor = vec4(vColor, smoothstep(0.1, 0.5, d));`
+        );
+    };
 
     const particles = new THREE.Points(g, m);
     particles.rotation.z = 0.2;
@@ -241,7 +246,9 @@ export default function UniverseSphere() {
 
     return () => {
       window.removeEventListener("resize", handleResize);
-      mountRef.current.removeChild(renderer.domElement);
+      if (mountEl.contains(renderer.domElement)) {
+        mountEl.removeChild(renderer.domElement);
+      }
     };
   }, []);
 
